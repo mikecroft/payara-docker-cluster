@@ -32,8 +32,8 @@ docker rm das     >/dev/null 2>&1
 docker rm node1   >/dev/null 2>&1
 
 # Run new containers
-docker run -i -p 4848:4848 -t -d --name das   payara:4.1.152.1.zulu8  /bin/bash
-docker run -i              -t -d --name node1 payara:4.1.152.1.zulu8  /bin/bash
+docker run -i -p 4848:4848 -t -d --name das   -h das   payara:4.1.152.1.zulu8  /bin/bash
+docker run -i              -t -d --name node1 -h node1 payara:4.1.152.1.zulu8  /bin/bash
 
 createPasswordFile() {
 
@@ -94,8 +94,8 @@ createConfigNodeCluster() {
 docker exec das   $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848 create-cluster cluster
 docker exec das   $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848 create-node-config --nodehost node1 --installdir $PAYA_HOME node1
 
-docker exec das   $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848            create-local-instance  --cluster cluster instance0
-docker exec node1 $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848 --host das create-local-instance  --cluster cluster instance1
+docker exec das   $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848            create-local-instance              --cluster cluster instance0
+docker exec node1 $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848 --host das create-local-instance --node node1 --cluster cluster instance1
 
 docker exec das   $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile                        start-local-instance --sync  full instance0
 docker exec node1 $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848 --host das start-local-instance --sync  full instance1
