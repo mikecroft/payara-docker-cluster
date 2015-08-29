@@ -91,13 +91,14 @@ fi
 
 createConfigNodeCluster() {
 
-docker exec das $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848 create-cluster cluster
-docker exec das $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848 create-node-config --nodehost node1 --installdir $PAYA_HOME node1
+docker exec das   $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848 create-cluster cluster
+docker exec das   $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848 create-node-config --nodehost node1 --installdir $PAYA_HOME node1
 
 docker exec das   $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848            create-local-instance  --cluster cluster instance0
 docker exec node1 $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848 --host das create-local-instance  --cluster cluster instance1
 
-docker exec das   $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile start-cluster cluster
+docker exec das   $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile                        start-local-instance --sync  full instance0
+docker exec node1 $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848 --host das start-local-instance --sync  full instance1
 
 }
 
