@@ -43,15 +43,19 @@ AS_ADMIN_SSHPASSWORD=$PASSWORD
 EOF
 
 docker cp pfile das:$PAYA_HOME
-docker exec das cat $PAYA_HOME/pfile
+docker cp pfile node1:$PAYA_HOME
 
 }
 
+startDomain() {
+
+docker exec das $ASADMIN start-domain domain1
+
+}
 
 enableSecureAdmin() {
 
 # Set admin password
-docker exec das $ASADMIN start-domain domain1
     
 docker exec das curl  -X POST \
     -H 'X-Requested-By: payara' \
@@ -90,10 +94,15 @@ createConfigNodeCluster() {
 docker exec das $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848 create-cluster cluster
 docker exec das $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848 create-node-config --nodehost node1 --installdir $PAYA_HOME node1
 
-# TODO finish function
+docker exec das   $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848            create-local-instance  --cluster cluster instance0
+docker exec node1 $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848 --host das create-local-instance  --cluster cluster instance1
+
+docker exec das   $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile start-cluster cluster
 
 }
 
 createPasswordFile
+startDomain
 enableSecureAdmin
-createSSHNode
+#createSSHNodeCluster
+createConfigNodeCluster
