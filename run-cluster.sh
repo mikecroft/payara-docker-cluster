@@ -31,8 +31,11 @@ docker kill node1 >/dev/null 2>&1
 docker rm das     >/dev/null 2>&1
 docker rm node1   >/dev/null 2>&1
 
-# Run new containers
-docker run -i -p 4848:4848 -t -d --name das   -h das   payara:4.1.152.1.zulu8  /bin/bash
+# Run
+docker run -i -p 5858:4848 -t -d --name das   -h das \
+           -e DISPLAY=$DISPLAY \
+           -v /tmp/.X11-unix:/tmp/.X11-unix \
+           payara:4.1.152.1.zulu8  /bin/bash
 docker run -i              -t -d --name node1 -h node1 payara:4.1.152.1.zulu8  /bin/bash
 
 createPasswordFile() {
