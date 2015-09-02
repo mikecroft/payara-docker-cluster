@@ -22,7 +22,7 @@ set -o nounset                              # Treat unset variables as an error
 
 ASADMIN=/opt/payara41/glassfish/bin/asadmin
 PAYA_HOME=/opt/payara41
-PASSWORD=payara
+PASSWORD=admin
 
 # Attempt to clean up any old containers
 docker kill das   >/dev/null 2>&1
@@ -42,7 +42,7 @@ createPasswordFile() {
 
 cat << EOF > pfile
 AS_ADMIN_PASSWORD=$PASSWORD
-AS_ADMIN_SSHPASSWORD=$PASSWORD
+AS_ADMIN_SSHPASSWORD=payara
 EOF
 
 docker cp pfile das:$PAYA_HOME
