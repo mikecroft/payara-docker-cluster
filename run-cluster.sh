@@ -75,7 +75,7 @@ docker exec das curl  -X POST \
     http://localhost:4848/management/domain/change-admin-password
     
 docker exec das $RASADMIN enable-secure-admin
-docker exec das $RASADMIN restart-domain domain1
+docker exec das $ASADMIN restart-domain domain1
 
 }
 
