@@ -23,6 +23,7 @@ set -o nounset                              # Treat unset variables as an error
 ASADMIN=/opt/payara41/glassfish/bin/asadmin
 PAYA_HOME=/opt/payara41
 PASSWORD=admin
+RASADMIN="$RASADMIN"
 
 # Attempt to clean up any old containers
 docker kill das   >/dev/null 2>&1
@@ -68,8 +69,8 @@ docker exec das curl  -X POST \
     -d AS_ADMIN_NEWPASSWORD=$PASSWORD \
     http://localhost:4848/management/domain/change-admin-password
     
-docker exec das $ASADMIN --user admin --passwordfile $PAYA_HOME/pfile enable-secure-admin
-docker exec das $ASADMIN restart-domain domain1
+docker exec das $RASADMIN enable-secure-admin
+docker exec das $RASADMIN restart-domain domain1
 
 }
 
@@ -77,31 +78,44 @@ docker exec das $ASADMIN restart-domain domain1
 createSSHNodeCluster() {
 
 # Create cluster SSH node
-docker exec das $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848 create-cluster cluster
-docker exec das $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848 setup-ssh --generatekey=true node1
+docker exec das $RASADMIN create-cluster cluster
+docker exec das $RASADMIN setup-ssh --generatekey=true node1
 
 # FIXME setup-ssh doesn't work yet
 if [ $? -ne 0 ]
 then
     echo "couldn't setup SHH"
 else
-    docker exec das $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848 create-node-ssh --nodehost node1 --sshuser payara --installdir '/opt/payara41' node1
-    docker exec das $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848 create-instance --node localhost.localdomain --cluster cluster instance0
-    docker exec das $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848 create-instance --node node1                 --cluster cluster instance1
+    docker exec das $RASADMIN create-node-ssh --nodehost node1 --sshuser payara --installdir '/opt/payara41' node1
+    docker exec das $RASADMIN create-instance --node localhost.localdomain --cluster cluster instance0
+    docker exec das $RASADMIN create-instance --node node1                 --cluster cluster instance1
 fi
 
 }
 
 createConfigNodeCluster() {
 
-docker exec das   $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848 create-cluster cluster
-docker exec das   $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848 create-node-config --nodehost node1 --installdir $PAYA_HOME node1
+docker exec das   $RASADMIN create-cluster cluster
+docker exec das   $RASADMIN create-node-config --nodehost node1 --installdir $PAYA_HOME node1
 
-docker exec das   $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848            create-local-instance              --cluster cluster instance0
-docker exec node1 $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848 --host das create-local-instance --node node1 --cluster cluster instance1
+docker exec das   $RASADMIN create-local-instance              --cluster cluster i00
+docker exec das   $RASADMIN create-local-instance              --cluster cluster i01
+docker exec node1 $RASADMIN create-local-instance --node node1 --cluster cluster i10
+docker exec node1 $RASADMIN create-local-instance --node node1 --cluster cluster i11
 
-docker exec das   $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile                        start-local-instance --sync  full instance0
-docker exec node1 $ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848 --host das start-local-instance --sync  full instance1
+docker exec das   $RASADMIN start-local-instance --sync  full i00
+docker exec das   $RASADMIN start-local-instance --sync  full i01
+docker exec node1 $RASADMIN start-local-instance --sync  full i10
+docker exec node1 $RASADMIN start-local-instance --sync  full i11
+
+
+docker exec das   $RASADMIN create-system-properties --target i00 INST_ID=i00
+docker exec das   $RASADMIN create-system-properties --target i01 INST_ID=i01
+docker exec das   $RASADMIN create-system-properties --target i10 INST_ID=i10
+docker exec das   $RASADMIN create-system-properties --target i11 INST_ID=i11
+
+docker exec das   $RASADMIN create-jvm-options --target cluster "-DjvmRoute=${INST_ID}"
+
 
 }
 
