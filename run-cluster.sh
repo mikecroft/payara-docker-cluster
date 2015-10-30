@@ -23,7 +23,7 @@ set -o nounset                              # Treat unset variables as an error
 ASADMIN=/opt/payara41/glassfish/bin/asadmin
 PAYA_HOME=/opt/payara41
 PASSWORD=admin
-RASADMIN="$RASADMIN"
+RASADMIN="$ASADMIN --user admin --passwordfile=$PAYA_HOME/pfile --port 4848 --host das"
 
 # Attempt to clean up any old containers
 docker kill das   >/dev/null 2>&1
