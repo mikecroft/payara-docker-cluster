@@ -33,12 +33,12 @@ docker rm das     >/dev/null 2>&1
 docker rm node1   >/dev/null 2>&1
 
 # Run
-docker run -i -p 5858:4848 -p 18080:28080 \
+docker run -i -p 5858:4848 -p 18081:28081 -p 18080:28080 \
            -t -d --name das   -h das \
            -e DISPLAY=$DISPLAY \
            -v /tmp/.X11-unix:/tmp/.X11-unix \
            payara:4.1.153.zulu8  /bin/bash
-docker run -i -p 28080:28080 \
+docker run -i -p 28081:28081 -p 28080:28080 \
            -t -d --name node1 -h node1 \
            -e DISPLAY=$DISPLAY \
            -v /tmp/.X11-unix:/tmp/.X11-unix \
@@ -119,8 +119,7 @@ docker exec das   $RASADMIN create-system-properties --target i01 INST_ID=i01
 docker exec das   $RASADMIN create-system-properties --target i10 INST_ID=i10
 docker exec das   $RASADMIN create-system-properties --target i11 INST_ID=i11
 
-docker exec das   $RASADMIN create-jvm-options --target cluster "-DjvmRoute=${INST_ID}"
-
+docker exec das   $ASADMIN create-jvm-options --target cluster "-DjvmRoute=\$\{INST_ID\}"
 
 }
 
