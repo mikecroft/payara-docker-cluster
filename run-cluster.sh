@@ -80,24 +80,6 @@ docker exec das $ASADMIN restart-domain domain1
 }
 
 
-createSSHNodeCluster() {
-
-# Create cluster SSH node
-docker exec das $RASADMIN create-cluster cluster
-docker exec das $RASADMIN setup-ssh --generatekey=true node1
-
-# FIXME setup-ssh doesn't work yet
-if [ $? -ne 0 ]
-then
-    echo "couldn't setup SHH"
-else
-    docker exec das $RASADMIN create-node-ssh --nodehost node1 --sshuser payara --installdir '/opt/payara41' node1
-    docker exec das $RASADMIN create-instance --node localhost.localdomain --cluster cluster instance0
-    docker exec das $RASADMIN create-instance --node node1                 --cluster cluster instance1
-fi
-
-}
-
 createConfigNodeCluster() {
 
 docker exec das   $RASADMIN create-cluster cluster
@@ -126,5 +108,4 @@ docker exec das   $ASADMIN create-jvm-options --target cluster "-DjvmRoute=\$\{I
 createPasswordFile
 startDomain
 enableSecureAdmin
-#createSSHNodeCluster
 createConfigNodeCluster
