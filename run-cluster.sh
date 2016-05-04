@@ -32,17 +32,19 @@ docker kill node1 >/dev/null 2>&1
 docker rm das     >/dev/null 2>&1
 docker rm node1   >/dev/null 2>&1
 
+# Update the image
+docker pull payara/server-full:latest
 # Run
 docker run -i -p 5858:4848 -p 18081:28081 -p 18080:28080 \
            -t -d --name das   -h das \
            -e DISPLAY=$DISPLAY \
            -v /tmp/.X11-unix:/tmp/.X11-unix \
-           payara:4.1.153.zulu8  /bin/bash
+           payara/server-full:latest  /bin/bash
 docker run -i -p 28081:28081 -p 28080:28080 \
            -t -d --name node1 -h node1 \
            -e DISPLAY=$DISPLAY \
            -v /tmp/.X11-unix:/tmp/.X11-unix \
-           payara:4.1.153.zulu8  /bin/bash
+           payara/server-full:latest  /bin/bash
 
 createPasswordFile() {
 
