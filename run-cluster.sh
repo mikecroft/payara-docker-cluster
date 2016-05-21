@@ -97,7 +97,7 @@ docker exec das   $RASADMIN create-system-properties --target i01 INST_ID=i01
 docker exec das   $RASADMIN create-system-properties --target i10 INST_ID=i10
 docker exec das   $RASADMIN create-system-properties --target i11 INST_ID=i11
 
-docker exec das   $ASADMIN create-jvm-options --target cluster "-DjvmRoute=\${INST_ID}"
+docker exec das   $RASADMIN create-jvm-options --target cluster "-DjvmRoute=\${INST_ID}"
 
 }
 
