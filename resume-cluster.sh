@@ -7,14 +7,8 @@
 # 
 #   DESCRIPTION: Resumes docker cluster rather than recreating
 # 
-#       OPTIONS: ---
-#  REQUIREMENTS: ---
-#          BUGS: ---
-#         NOTES: ---
-#        AUTHOR: YOUR NAME (), 
-#  ORGANIZATION: 
-#       CREATED: 08/12/15 09:53
-#      REVISION:  ---
+#        AUTHOR: Mike Croft
+#  ORGANIZATION: Payara
 #===============================================================================
 
 set -o nounset                              # Treat unset variables as an error
